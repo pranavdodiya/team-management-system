@@ -1,0 +1,303 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+paths:
+  "/api/signup":
+    post:
+      summary: user signup
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: abc123@gmail.com
+                    password:
+                      type: string
+                      example: abc@123
+                    name:
+                      type: string
+                      example: Admin User
+                  required:
+                  - email
+                  - password
+                  - name
+              required:
+              - user
+  "/api/signin":
+    post:
+      summary: user signin
+      tags:
+      - Authentication
+      security:
+      - BearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      example: abc123@gmail.com
+                    password:
+                      type: string
+                      example: abc@123
+                  required:
+                  - email
+                  - password
+  "/api/teams/{team_id}/team_members":
+    post:
+      summary: add team member
+      tags:
+      - Team Members
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: team_id
+        in: path
+        description: Team ID
+        example: 1
+        required: true
+        schema:
+          type: integer
+      responses:
+        '201':
+          description: team member added
+        '404':
+          description: user not found
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team_member:
+                  type: object
+                  properties:
+                    user_id:
+                      type: integer
+                      example: 1
+                  required:
+                  - user_id
+              required:
+              - team_member
+    get:
+      summary: list team members
+      tags:
+      - Team Members
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: team_id
+        in: path
+        description: Team ID
+        example: 1
+        required: true
+        schema:
+          type: integer
+      - name: query
+        in: query
+        description: Search query for team member name (optional)
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: list of team members
+        '404':
+          description: no team members found
+  "/api/teams/{team_id}/team_members/{id}":
+    get:
+      summary: show team member
+      tags:
+      - Team Members
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: team_id
+        in: path
+        description: Team ID
+        example: 1
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        description: Team Member ID
+        example: 1
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: team member details
+        '404':
+          description: team member not found
+    delete:
+      summary: remove team member
+      tags:
+      - Team Members
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: team_id
+        in: path
+        description: Team ID
+        example: 1
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        description: Team Member ID
+        example: 1
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: team member removed
+        '404':
+          description: team member not found
+  "/api/teams":
+    post:
+      summary: create team
+      tags:
+      - Teams
+      security:
+      - BearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: team created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Team 1
+                    description:
+                      type: string
+                      example: ROR team
+                  required:
+                  - name
+                  - description
+              required:
+              - team
+    get:
+      summary: list teams
+      tags:
+      - Teams
+      security:
+      - BearerAuth: []
+      responses:
+        '200':
+          description: list of teams
+        '401':
+          description: unauthorized
+  "/api/teams/{id}":
+    put:
+      summary: update team
+      tags:
+      - Teams
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Team ID
+        example: 1
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: team updated
+        '422':
+          description: unprocessable entity
+        '404':
+          description: team not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                team:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Team 1
+                    description:
+                      type: string
+                      example: ROR team
+                  required:
+                  - name
+                  - description
+              required:
+              - team
+    delete:
+      summary: delete team
+      tags:
+      - Teams
+      security:
+      - BearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Team ID
+        example: 1
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: team deleted
+        '404':
+          description: team not found
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+- BearerAuth: []
+servers:
+- url: http://localhost:3000

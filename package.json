@@ -1,5 +1,8 @@
 {
   "name": "team-management-system",
   "private": true,
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "cypress": "^13.15.2"
+  }
 }
